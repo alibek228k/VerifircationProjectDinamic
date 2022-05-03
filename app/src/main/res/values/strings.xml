@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">ValidationProject</string>
+    <string name="password">Password</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="middle_name">Middle Name</string>
+    <string name="username">Username</string>
+    <string name="iin">IIN</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="birthday">Birthday</string>
+    <string name="register">Register</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="first_name_error">Field First name cannot be empty!</string>
+    <string name="last_name_error">Field Last name cannot be empty!</string>
+    <string name="middle_name_error">Field Middle name cannot be empty!</string>
+    <string name="username_error">Field Username cannot be empty!</string>
+    <string name="iin_error">Field IIN cannot be empty!</string>
+    <string name="phone_number_error">Field phone number cannot be empty!</string>
+    <string name="password_error">Field password cannot be empty!</string>
+    <string name="invalid_format">Invalid format!</string>
+    <string name="birthday_error">Field birthday cannot be empty!</string>
+    <string name="passwords_should_be_same">Passwords should be same!</string>
+    <string name="password_confi_error">Field password confirm cannot be empty!</string>
+    <string name="username_format_error">Username must contain at least 3 characters and a maximum of 15</string>
+    <string name="iin_format_error">IIN should contain 12 characters!</string>
+    <string name="password_format_error">Password should contain: at least 8 symbols, 1 uppercase letter, 1 special symbol (!/$%^)</string>
+    <string name="selected_language">English</string>
+
+
+</resources>

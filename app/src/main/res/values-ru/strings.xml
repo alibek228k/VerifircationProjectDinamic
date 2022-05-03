@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Проект валидации</string>
+    <string name="selected_language">Русский</string>
+    <string name="password">Пароль</string>
+    <string name="first_name">Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="middle_name">Отчество</string>
+    <string name="username">Имя пользвателя</string>
+    <string name="iin">ИИН</string>
+    <string name="phone_number">Номер телефона</string>
+    <string name="birthday">День рождения</string>
+    <string name="register">Регистрация</string>
+    <string name="confirm_password">Подтверждение пороля</string>
+    <string name="first_name_error">Поле "Имя" не может быть пустым!</string>
+    <string name="last_name_error">Поле "Фамилия" не может быть пустым!</string>
+    <string name="middle_name_error">Поле "Отчество" не может быть пустым!</string>
+    <string name="username_error">Поле "Имя пользователя" не может быть пустым!</string>
+    <string name="iin_error">Поле "ИИН" не может быть пустым!</string>
+    <string name="phone_number_error">Поле "Номер телефона" не может быть пустым!</string>
+    <string name="password_error">Поле "Пароль" не может быть пустым!</string>
+    <string name="invalid_format">Некоректный формат!</string>
+    <string name="birthday_error">Поле "День рождения" не можеть быть пустым!</string>
+    <string name="passwords_should_be_same">Пароли должны быть одиноковыми!</string>
+    <string name="password_confi_error">Поле "Подтверждение пароля" не может быть пустым!</string>
+    <string name="username_format_error">Поле имя пользователя должно содержать в себе от 3 до 15 символов!</string>
+    <string name="iin_format_error">ИИН должен содержать 12 символов!</string>
+    <string name="password_format_error">Пароль должен содержать: как минимум 8 символов, 1 заглавную букву, 1 специальный символ (!/$%^)</string>
+</resources>

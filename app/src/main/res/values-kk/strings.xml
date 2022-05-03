@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Валидация проекті</string>
+    <string name="selected_language">Қазақ</string>
+    <string name="password">Жасырын сөз</string>
+    <string name="first_name">Аты</string>
+    <string name="last_name">Тегі</string>
+    <string name="middle_name">Әкесінің аты</string>
+    <string name="username">Пайдаланушы аты</string>
+    <string name="iin">ЖСН</string>
+    <string name="phone_number">Ұялы телефон нөмірі</string>
+    <string name="birthday">Туылған күні</string>
+    <string name="register">Жүйеге қосылу</string>
+    <string name="confirm_password">Жасырын сөзді растау</string>
+    <string name="first_name_error">"Аты" мәні бол болмау қажет!</string>
+    <string name="last_name_error">"Тегі" мәні бос болмау қажет!</string>
+    <string name="middle_name_error">"Әкесінің аты" мәні бос болмау қажет!</string>
+    <string name="username_error">"Пайдаланушы аты" мәні бос болмау қажет!</string>
+    <string name="iin_error">"ЖСН" мәні бос болмау қажет!</string>
+    <string name="phone_number_error">"Ұялы телефон нөмірі" мәні бос бола алмайды!</string>
+    <string name="password_error">"Жасырын сөз" мәні бос болмау қажет!</string>
+    <string name="invalid_format">Үлгі бойынша сай емес!</string>
+    <string name="birthday_error">"Туылған күні" мәні бол болмау қажет!</string>
+    <string name="passwords_should_be_same">Жасырын сөздер бірдей болу қажет!</string>
+    <string name="password_confi_error">"Жасырын сөзді растау" мәні бос болмау қажет!</string>
+    <string name="username_format_error">"Пайдаланушы аты" мәні 3 тен 15 ке дейін элементтен тұру қажет!</string>
+    <string name="iin_format_error">ЖСН 12 саннан тұруы қажет!</string>
+    <string name="password_format_error">Жасырын сөзде 1 сан, 1 бас әріп және 1 арнайы таңба (!/$%^) болуы тиіс!</string>
+</resources>
