@@ -25,4 +25,5 @@
     <string name="username_format_error">Поле имя пользователя должно содержать в себе от 3 до 15 символов!</string>
     <string name="iin_format_error">ИИН должен содержать 12 символов!</string>
     <string name="password_format_error">Пароль должен содержать: как минимум 8 символов, 1 заглавную букву, 1 специальный символ (!/$%^)</string>
+    <string name="create_account">Создание аккаунта</string>
 </resources>

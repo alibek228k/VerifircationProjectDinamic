@@ -1,0 +1,128 @@
+[
+    { 
+        "id": 1,
+        "title": "First name",
+        "type": "input_text",
+        "description": null,
+        "is_required": true,
+        "specs": {
+            "input_text_max_length": 150, 
+            "input_text_max_lines": 1
+        },
+        "errors": {
+            "blank": "The first name value cannot be empty! Please, enter your first name"
+        }
+    },
+    {
+        "id": 2,
+        "title": "Last name",
+        "type": "input_text",
+        "description": null,
+        "is_required": true,
+        "specs": {
+            "input_text_max_length": 150, 
+            "input_text_max_lines": 1
+        },
+        "errors": {
+            "blank": "The last name value cannot be blank! Please, enter your last name"
+        }
+    },
+    {
+        "id": 3,
+        "title": "Middle name",
+        "type": "input_text",
+        "description": null,
+        "is_required": false,
+        "specs": {
+            "input_text_max_length": 150, 
+            "input_text_max_lines": 1
+        },
+        "errors": {
+            "blank": "The middle name value cannot be blank! Please, enter your middle name"
+        }
+    },
+    {
+        "id": 4,
+        "title": "Username",
+        "type": "input_text",
+        "description": "Your unique account name",
+        "is_required": true,
+        "specs": {
+            "input_text_max_length": 150, 
+            "input_text_max_lines": 1
+        },
+        "errors": {
+            "blank": "The username value cannot be blank! Please, enter your username"
+        }
+    },
+    {
+        "id": 5,
+        "title": "IIN",
+        "type": "input_text",
+        "description": "Refer to: <a href=\"https://ru.wikipedia.org/wiki/Индивидуальный_идентификационный_номер\"></a>",
+        "is_required": true,
+        "specs": {
+            "input_text_max_lines": 1
+        },
+        "validators": {
+            "regex": "^\\d{12}$"
+        },
+        "errors": {
+            "blank": "The IIN value cannot be blank! Please, enter your IIN",
+            "regex": "The format of IIN MUST be XXYYZZAABBCC!"
+        }
+    },
+    {
+        "id": 6,
+        "title": "Phone number",
+        "type": "input_text",
+        "description": null,
+        "is_required": true,
+        "specs": {
+            "input_text_max_lines": 1
+        },
+        "validators": {
+            "regex": "^77[0-9]{9}$"
+        },
+        "errors": {
+            "blank": "The IIN value cannot be blank! Please, enter your IIN",
+            "regex": "The format of phone number MUST be 77XXYYYZZAA!"
+        }
+    },
+    {
+        "id": 7,
+        "title": "Birthday",
+        "type": "date_selection",
+        "description": "Select date",
+        "is_required": true,
+        "errors": {
+            "blank": "The birthday value cannot be blank! Please, select a date as your birthday"
+        }
+    },
+    {
+        "id": 8,
+        "title": "Password",
+        "type": "password",
+        "description": "Format: at least 1 capital letter, at least 1 digit & must have 6 to 25 characters",
+        "is_required": true,
+        "validators": {
+            "regex": "^(?=.*[0-9])(?=.*[A-Z])(?=\S+$).{6,25}$"
+        },
+        "errors": {
+            "blank": "The password value cannot be blank! Please, enter a password",
+            "regex": "The password MUST have at least 1 capital letter, at least 1 digit (length: 6 to 25 characters)!"
+        }
+    },
+    {
+        "id": 9,
+        "title": "Password confirmation",
+        "type": "password_confirmation",
+        "description": null,
+        "is_required": true,
+        "target_field_id": 8,
+        "errors": {
+            "blank": "The password confirmation value cannot be blank! Please, enter password confirmation",
+            "target_value_mismatch": "The value of password confirmation MUST be the same as password!"
+        }
+    }
+]
