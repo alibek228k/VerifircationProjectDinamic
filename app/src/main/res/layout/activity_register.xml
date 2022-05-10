@@ -12,6 +12,28 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/register"
+            android:layout_marginStart="30dp"
+            android:textSize="28sp"/>
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_account"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:textSize="18sp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recyclerView"/>
+
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/firstNameEditText"
@@ -34,6 +56,15 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/descriptionFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_account"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:textSize="14sp"/>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/lastNameEditText"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -53,6 +84,15 @@
                 android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/descriptionLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_account"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:textSize="14sp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/middleNameEditText"
@@ -74,6 +114,15 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/descriptionMiddleName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_account"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:textSize="14sp"/>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/usernameEditText"
@@ -94,6 +143,15 @@
                 android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/descriptionUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_account"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:textSize="14sp"/>
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -118,6 +176,15 @@
                 android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/descriptionIIN"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_account"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:textSize="14sp"/>
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -146,6 +213,15 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/descriptionPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_account"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:textSize="14sp"/>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/birthdayEditText"
@@ -165,11 +241,20 @@
                 android:layout_height="wrap_content"
                 android:cursorVisible="false"
                 android:focusable="false"
-                android:inputType="none"
+                android:inputType="date"
                 android:maxLines="1"
                 android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/descriptionBirthday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_account"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:textSize="14sp"/>
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -194,6 +279,15 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/descriptionPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_account"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:textSize="14sp"/>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/passwordConfirmEditText"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -215,6 +309,15 @@
                 android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/descriptionPasswordConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_account"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:textSize="14sp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/registerButton"

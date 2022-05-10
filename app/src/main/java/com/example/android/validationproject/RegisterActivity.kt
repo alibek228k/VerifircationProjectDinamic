@@ -1,23 +1,37 @@
 package com.example.android.validationproject
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.*
+import android.view.View
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.android.validationproject.Validation.EditTextValidator
+import com.example.android.validationproject.adapter.FormAdapter
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.IOException
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class RegisterActivity : AppCompatActivity() {
 
-    private var prefix = "+7"
-    private var viewModel: RegisterViewModel? = null
+    private var recyclerView: RecyclerView ?= null
+    private var title: TextView ?= null
+    private var desctiprion: TextView ?= null
     private var firstNameEditText: TextInputLayout? = null
     private var lastNameEditText: TextInputLayout? = null
     private var middleNameEditText: TextInputLayout? = null
@@ -28,6 +42,15 @@ class RegisterActivity : AppCompatActivity() {
     private var passwordEditText: TextInputLayout? = null
     private var passwordConfirmEditText: TextInputLayout? = null
     private var button: MaterialButton? = null
+
+    private var descriptions: ArrayList<String> = ArrayList()
+    private val titles: ArrayList<String> = ArrayList()
+
+
+    private var confMessage:String ?= null
+    private var prefix = "+7"
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +66,10 @@ class RegisterActivity : AppCompatActivity() {
         birthdayEditText = findViewById(R.id.birthdayEditText)
         passwordEditText = findViewById(R.id.passwordEditText)
         passwordConfirmEditText = findViewById(R.id.passwordConfirmEditText)
+        recyclerView = findViewById(R.id.recyclerView)
         button = findViewById(R.id.registerButton)
+        title = findViewById(R.id.title)
+        desctiprion = findViewById(R.id.description)
         setupRegisterButton()
         setupBirthdayInputText()
         setupPhoneNumberFormat()
@@ -57,7 +83,16 @@ class RegisterActivity : AppCompatActivity() {
         setupPasswordValidator()
         setupPasswordConfirmationValidator()
         setupErrorEnabling()
+        setupJSONFormParsing()
+        setupJSONFieldsParsing()
+        setupRecyclerView()
 
+
+    }
+
+    private fun setupRecyclerView(){
+        val linearLayoutManager = LinearLayoutManager(applicationContext)
+        recyclerView?.layoutManager = linearLayoutManager
     }
 
     private fun setupFirstNameValidator() {
@@ -257,6 +292,8 @@ class RegisterActivity : AppCompatActivity() {
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 finish()
+                val toast = Toast.makeText(this, confMessage, Toast.LENGTH_SHORT)
+                toast.show()
             }
         }
     }
@@ -359,6 +396,54 @@ class RegisterActivity : AppCompatActivity() {
         birthdayEditText?.isErrorEnabled = true
         passwordEditText?.isErrorEnabled = true
         passwordConfirmEditText?.isErrorEnabled = true
+    }
+
+    private fun setupJSONFormParsing() {
+        try {
+            val jsonObject = JSONObject(jsonDataFromAssets("form.json"))
+            title?.text = jsonObject.getString("title")
+            desctiprion?.text = jsonObject.getString("description")
+            val presentation = jsonObject.getJSONObject("presentation")
+            val submission = presentation.getJSONObject("submission")
+            confMessage = submission.getString("confirmation_message")
+
+
+
+        }catch (e: JSONException){
+            e.printStackTrace()
+        }
+    }
+
+    private fun setupJSONFieldsParsing() {
+        try {
+            val jsonArray = JSONArray(jsonDataFromAssets("fields.json"))
+            for (i in 0..jsonArray.length()){
+                val fieldData = jsonArray.getJSONObject(i)
+                titles.add(fieldData.getString("title"))
+                descriptions.add(fieldData.getString("description"))
+            }
+
+        }catch (e: JSONException){
+            e.printStackTrace()
+        }
+        val formAdapter = FormAdapter(titles, descriptions, this)
+        recyclerView?.adapter = formAdapter
+    }
+
+    private fun jsonDataFromAssets(filename: String): String {
+        val json: String
+        try {
+            val inputStream: InputStream = assets.open(filename)
+            val sizeOfFile = inputStream.available()
+            val bufferedData = ByteArray(sizeOfFile)
+            inputStream.read(bufferedData)
+            inputStream.close()
+            json = String(bufferedData, charset("UTF-8"))
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return ""
+        }
+        return json
     }
 
 

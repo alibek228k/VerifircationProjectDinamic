@@ -1,0 +1,10 @@
+{
+  "id": 666,
+  "title": "Sign up",
+  "description": "Create your account",
+  "presentation": {
+      "submission": {
+          "confirmation_message": "Sign up is complete & you can log in by your a fresh new account"
+      }
+  }
+}

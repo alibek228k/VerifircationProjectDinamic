@@ -25,4 +25,5 @@
     <string name="username_format_error">"Пайдаланушы аты" мәні 3 тен 15 ке дейін элементтен тұру қажет!</string>
     <string name="iin_format_error">ЖСН 12 саннан тұруы қажет!</string>
     <string name="password_format_error">Жасырын сөзде 1 сан, 1 бас әріп және 1 арнайы таңба (!/$%^) болуы тиіс!</string>
+    <string name="create_account">Аккаунт құру</string>
 </resources>

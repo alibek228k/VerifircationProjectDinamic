@@ -25,6 +25,7 @@
     <string name="iin_format_error">IIN should contain 12 characters!</string>
     <string name="password_format_error">Password should contain: at least 8 symbols, 1 uppercase letter, 1 special symbol (!/$%^)</string>
     <string name="selected_language">English</string>
+    <string name="create_account">Create an account</string>
 
 
 </resources>
