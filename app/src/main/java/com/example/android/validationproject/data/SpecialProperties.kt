@@ -1,5 +1,6 @@
 package com.example.android.validationproject.data
 
-abstract class SpecialProperties (private var inputMaxLength: Int, private var inputMinLength:Int){
+class SpecialProperties (var inputMaxLength: Int?, var inputMaxLines:Int?){
+    constructor(): this(null, null)
 
 }

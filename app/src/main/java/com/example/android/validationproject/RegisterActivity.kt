@@ -1,19 +1,22 @@
 package com.example.android.validationproject
 
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.*
-import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.validationproject.Validation.EditTextValidator
+import com.example.android.validationproject.Validation.Errors
+import com.example.android.validationproject.Validation.Validators
 import com.example.android.validationproject.adapter.FormAdapter
+import com.example.android.validationproject.data.SpecialProperties
+import com.example.android.validationproject.modal.Fields
+import com.example.android.validationproject.modal.Form
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -29,9 +32,9 @@ import kotlin.collections.ArrayList
 
 class RegisterActivity : AppCompatActivity() {
 
-    private var recyclerView: RecyclerView ?= null
-    private var title: TextView ?= null
-    private var desctiprion: TextView ?= null
+    private var recyclerView: RecyclerView? = null
+    private var title: TextView? = null
+    private var desctiprion: TextView? = null
     private var firstNameEditText: TextInputLayout? = null
     private var lastNameEditText: TextInputLayout? = null
     private var middleNameEditText: TextInputLayout? = null
@@ -43,29 +46,27 @@ class RegisterActivity : AppCompatActivity() {
     private var passwordConfirmEditText: TextInputLayout? = null
     private var button: MaterialButton? = null
 
-    private var descriptions: ArrayList<String> = ArrayList()
-    private val titles: ArrayList<String> = ArrayList()
+    private var fields: ArrayList<Fields> = ArrayList()
 
 
-    private var confMessage:String ?= null
+
+    private var confMessage: String? = null
     private var prefix = "+7"
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        firstNameEditText = findViewById(R.id.firstNameEditText)
-        lastNameEditText = findViewById(R.id.lastNameEditText)
-        middleNameEditText = findViewById(R.id.middleNameEditText)
-        usernameEditText = findViewById(R.id.usernameEditText)
-        iinEditText = findViewById(R.id.iinEditText)
-        phoneNumberEditText = findViewById(R.id.phoneNumberEditText)
-        birthdayEditText = findViewById(R.id.birthdayEditText)
-        passwordEditText = findViewById(R.id.passwordEditText)
-        passwordConfirmEditText = findViewById(R.id.passwordConfirmEditText)
+//        firstNameEditText = findViewById(R.id.firstNameEditText)
+//        lastNameEditText = findViewById(R.id.lastNameEditText)
+//        middleNameEditText = findViewById(R.id.middleNameEditText)
+//        usernameEditText = findViewById(R.id.usernameEditText)
+//        iinEditText = findViewById(R.id.iinEditText)
+//        phoneNumberEditText = findViewById(R.id.phoneNumberEditText)
+//        birthdayEditText = findViewById(R.id.birthdayEditText)
+//        passwordEditText = findViewById(R.id.passwordEditText)
+//        passwordConfirmEditText = findViewById(R.id.passwordConfirmEditText)
         recyclerView = findViewById(R.id.recyclerView)
         button = findViewById(R.id.registerButton)
         title = findViewById(R.id.title)
@@ -90,7 +91,7 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
-    private fun setupRecyclerView(){
+    private fun setupRecyclerView() {
         val linearLayoutManager = LinearLayoutManager(applicationContext)
         recyclerView?.layoutManager = linearLayoutManager
     }
@@ -408,8 +409,7 @@ class RegisterActivity : AppCompatActivity() {
             confMessage = submission.getString("confirmation_message")
 
 
-
-        }catch (e: JSONException){
+        } catch (e: JSONException) {
             e.printStackTrace()
         }
     }
@@ -417,16 +417,108 @@ class RegisterActivity : AppCompatActivity() {
     private fun setupJSONFieldsParsing() {
         try {
             val jsonArray = JSONArray(jsonDataFromAssets("fields.json"))
-            for (i in 0..jsonArray.length()){
+            for (i in 0 until jsonArray.length()) {
                 val fieldData = jsonArray.getJSONObject(i)
-                titles.add(fieldData.getString("title"))
-                descriptions.add(fieldData.getString("description"))
+                val field = Fields()
+                val specs = SpecialProperties()
+                val validators = Validators()
+                val errors = Errors()
+                field.id = fieldData.getInt("id")
+                field.title = fieldData.getString("title")
+                field.description = fieldData.getString("description")
+                field.isRequired = fieldData.getBoolean("is_required")
+                if (fieldData.has("target_field_id")){
+                    field.targetFieldId = fieldData.getInt("target_field_id")
+                }
+
+                if (fieldData.has("specs")) {
+                    if (fieldData.getJSONObject("specs")
+                            .has("input_text_max_length") && fieldData.getJSONObject("specs")
+                            .has("input_text_max_lines")
+                    ) {
+                        specs.inputMaxLength =
+                            fieldData.getJSONObject("specs").getInt("input_text_max_length")
+                        specs.inputMaxLines =
+                            fieldData.getJSONObject("specs").getInt("input_text_max_lines")
+                        field.specs = specs
+                    } else if (fieldData.getJSONObject("specs").has("input_text_max_length")) {
+                        specs.inputMaxLength =
+                            fieldData.getJSONObject("specs").getInt("input_text_max_length")
+                        field.specs = specs
+                    } else if (fieldData.getJSONObject("specs").has("input_text_max_lines")) {
+                        specs.inputMaxLines =
+                            fieldData.getJSONObject("specs").getInt("input_text_max_lines")
+                        field.specs = specs
+                    }
+                } else {
+                    println("has nothing")
+                }
+
+                if (fieldData.has("validators")) {
+                    if (fieldData.getJSONObject("validators")
+                            .has("regex")
+                    ) {
+                        validators.regex =
+                            fieldData.getJSONObject("validators").getString("regex")
+                        field.validators = validators
+                    }
+                } else {
+                    println("hasn't any type of validators")
+                }
+
+
+                if (fieldData.has("errors")) {
+                    if (fieldData.getJSONObject("errors")
+                            .has("blank") && fieldData.getJSONObject("errors")
+                            .has("regex")
+                    ) {
+                        errors.blanc =
+                            fieldData.getJSONObject("errors").getString("blank")
+                        errors.regex =
+                            fieldData.getJSONObject("errors").getString("regex")
+                        field.errors = errors
+                    } else if (fieldData.getJSONObject("errors")
+                            .has("blank") && fieldData.getJSONObject("errors")
+                            .has("target_value_mismatch")
+                    ){
+                        errors.blanc =
+                            fieldData.getJSONObject("errors").getString("blank")
+                        errors.target_value_mismatch =
+                            fieldData.getJSONObject("errors").getString("target_value_mismatch")
+                        field.errors = errors
+                    } else if (fieldData.getJSONObject("errors").has("blank")) {
+                        errors.blanc =
+                            fieldData.getJSONObject("errors").getString("blank")
+                        field.errors = errors
+                    } else if (fieldData.getJSONObject("errors").has("regex")) {
+                        errors.regex =
+                            fieldData.getJSONObject("errors").getString("regex")
+                        field.errors = errors
+                    }
+                } else {
+                    println("has nothing")
+                }
+                //type
+                if (fieldData.getString("type") == "input_text"){
+                    field.type = Fields.InputType.INPUT_TEXT
+                }else if (fieldData.getString("type") == "date_selection"){
+                    field.type = Fields.InputType.DATE_SELECTION
+                }else if (fieldData.getString("type") == "password"){
+                    field.type = Fields.InputType.PASSWORD
+                }else if (fieldData.getString("type") == "password_confirmation"){
+                    field.type = Fields.InputType.PASSWORD_CONFIRMATION
+                }
+
+                fields.add(field)
+
+
             }
 
-        }catch (e: JSONException){
+        } catch (e: JSONException) {
             e.printStackTrace()
         }
-        val formAdapter = FormAdapter(titles, descriptions, this)
+        val form = Form(fields)
+        val formAdapter = FormAdapter(form)
         recyclerView?.adapter = formAdapter
     }
 

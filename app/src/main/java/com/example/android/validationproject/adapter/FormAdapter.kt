@@ -1,17 +1,19 @@
 package com.example.android.validationproject.adapter
 
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.validationproject.R
+import com.example.android.validationproject.modal.Fields
 import com.example.android.validationproject.modal.Form
 import com.google.android.material.textfield.TextInputLayout
 
 
 class FormAdapter(
-    var title: ArrayList<Form>
+    var form: Form
 ): RecyclerView.Adapter<FormAdapter.FormViewHolder>() {
 
 
@@ -22,18 +24,33 @@ class FormAdapter(
     }
 
     override fun onBindViewHolder(holder: FormViewHolder, position: Int) {
-        title. = 50
-        holder.title.hint = title?.get(position)
-        if (!(description?.get(position).equals("null"))){
-            holder.description.text = description?.get(position)
+
+
+
+        val fields = form.fields[position]
+        holder.title.hint = form.fields[position].title
+
+        // description configuration
+        if (!(fields.description.equals("null"))){
+            holder.description.text = fields.description
         }else{
             holder.description.text = ""
         }
+        // type configuration
+        when (fields.type){
+            Fields.InputType.INPUT_TEXT -> holder.title.editText?.inputType = InputType.TYPE_CLASS_TEXT
+            Fields.InputType.DATE_SELECTION -> holder.title.editText?.inputType = InputType.TYPE_NULL
+            Fields.InputType.PASSWORD -> holder.title.editText?.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+            else -> {
+                holder.title.editText?.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+        }
+
 
     }
 
     override fun getItemCount(): Int {
-        return title?.size ?: 0
+        return form.fields.size
     }
 
     class FormViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
