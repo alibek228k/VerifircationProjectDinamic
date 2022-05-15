@@ -231,7 +231,6 @@
 <!--            android:layout_marginStart="30dp"-->
 <!--            android:layout_marginTop="5dp"-->
 <!--            android:layout_marginEnd="30dp"-->
-<!--            android:focusableInTouchMode="false"-->
 <!--            android:hint="@string/birthday"-->
 <!--            android:minHeight="40dp"-->
 <!--            app:startIconDrawable="@drawable/ic_calendar">-->
