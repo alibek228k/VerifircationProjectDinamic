@@ -1,6 +1,8 @@
 package com.example.android.validationproject.model
 
+
 class FieldPrompt constructor(
     val field: Field,
-    var value: String? = null
+    var value: String? = null,
+    var errors: String = "success"
 )

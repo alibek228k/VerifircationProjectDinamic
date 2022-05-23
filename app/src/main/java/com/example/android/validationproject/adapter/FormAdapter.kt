@@ -1,31 +1,45 @@
 package com.example.android.validationproject.adapter
 
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
+import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.validationproject.R
 import com.example.android.validationproject.Validation.EditTextValidator
 import com.example.android.validationproject.data.SpecialProperties
 import com.example.android.validationproject.model.Field
+import com.example.android.validationproject.model.FieldPrompt
 import com.google.android.material.textfield.TextInputLayout
 
 
-class FormAdapter(
-    private val fields: List<Field>,
+class FormAdapter constructor(
     private val listener: Listener
 ) : RecyclerView.Adapter<FormAdapter.BaseViewHolder>() {
+    var hashMap = HashMap<Int, Int>()
+    var fieldPrompts: List<FieldPrompt> = emptyList()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun getItemCount(): Int {
-        return fields.size
+        return fieldPrompts.size
     }
 
+
     override fun getItemViewType(position: Int): Int {
-        return when (fields[position].type) {
+        hashMap[position] = position
+        return when (fieldPrompts[position].field.type) {
             Field.Type.INPUT_TEXT -> 666
             Field.Type.DATE_SELECTION -> 777
             Field.Type.PASSWORD -> 888
@@ -34,37 +48,88 @@ class FormAdapter(
         }
     }
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
+        val position = hashMap[hashMap.size-1]
+
+        Log.d("ALIBEK", "Position: $position, Size: ${hashMap.size}")
         return when (viewType) {
-            666 -> InputTextViewHolder(layoutInflater.inflate(R.layout.input_layout, parent, false))
+            666 -> InputTextViewHolder(
+                layoutInflater.inflate(R.layout.input_layout, parent, false),
+                EditTextValidator {
+                    listener.onTextChanged(
+                        fieldPrompts[position!!].field,
+                        position,
+                        it
+                    )
+                })
             777 -> DateSelectionViewHolder(
                 layoutInflater.inflate(
                     R.layout.input_layout,
                     parent,
                     false
-                )
+                ), EditTextValidator {
+                    listener.onTextChanged(
+                        fieldPrompts[position!!].field,
+                        position,
+                        it
+                    )
+                }
             )
-            888 -> PasswordViewHolder(layoutInflater.inflate(R.layout.input_layout, parent, false))
+            888 -> PasswordViewHolder(
+                layoutInflater.inflate(R.layout.input_layout, parent, false),
+                EditTextValidator {
+                    listener.onTextChanged(
+                        fieldPrompts[position!!].field,
+                        position,
+                        it
+                    )
+                })
             999 -> PasswordConfirmationViewHolder(
                 layoutInflater.inflate(
                     R.layout.input_layout,
                     parent,
                     false
-                )
+                ), EditTextValidator {
+                    listener.onTextChanged(
+                        fieldPrompts[position!!].field,
+                        position,
+                        it
+                    )
+                }
             )
             else -> throw IllegalStateException()
         }
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
+        val fieldPrompt = fieldPrompts[position]
         when (holder) {
-            is InputTextViewHolder -> holder.bind(fields[position])
-            is DateSelectionViewHolder -> holder.bind(fields[position])
-            is PasswordViewHolder -> holder.bind(fields[position])
-            is PasswordConfirmationViewHolder -> holder.bind(fields[position])
+            is InputTextViewHolder -> holder.bind(fieldPrompt)
+            is DateSelectionViewHolder -> holder.bind(fieldPrompt)
+            is PasswordViewHolder -> holder.bind(fieldPrompt)
+            is PasswordConfirmationViewHolder -> holder.bind(fieldPrompt)
         }
 
+    }
+
+    override fun onViewAttachedToWindow(holder: BaseViewHolder) {
+        when(holder){
+            is InputTextViewHolder -> holder.addToTextWatcher()
+            is DateSelectionViewHolder -> holder.addToTextWatcher()
+            is PasswordViewHolder -> holder.addToTextWatcher()
+            is PasswordConfirmationViewHolder -> holder.addToTextWatcher()
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: BaseViewHolder) {
+        when(holder){
+            is InputTextViewHolder -> holder.disableTextWatcher()
+            is DateSelectionViewHolder -> holder.disableTextWatcher()
+            is PasswordViewHolder -> holder.disableTextWatcher()
+            is PasswordConfirmationViewHolder -> holder.disableTextWatcher()
+        }
     }
 
     override fun onBindViewHolder(
@@ -79,17 +144,19 @@ class FormAdapter(
                 val message = payload.getString("message")
                 val success = payload.getBoolean("success")
 
-                if (holder is InputTextViewHolder) {
-                    holder.validate(message, success)
-                }
-                if (holder is PasswordViewHolder){
-                    holder.validate(message, success)
-                }
-                if (holder is PasswordConfirmationViewHolder){
-                    holder.validate(message, success)
-                }
-                if (holder is DateSelectionViewHolder){
-                    holder.validate(message, success)
+                when (holder) {
+                    is InputTextViewHolder -> {
+                        holder.validate(position, message, success)
+                    }
+                    is PasswordViewHolder -> {
+                        holder.validate(position, message, success)
+                    }
+                    is PasswordConfirmationViewHolder -> {
+                        holder.validate(position, message, success)
+                    }
+                    is DateSelectionViewHolder -> {
+                        holder.validate(position, message, success)
+                    }
                 }
             }
         } else {
@@ -103,48 +170,65 @@ class FormAdapter(
             bundleOf("action" to "validation", "message" to s, "success" to ss)
         )
     }
-    fun errorChecking(){
 
-    }
 
-    abstract inner class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    abstract inner class BaseViewHolder(
+        itemView: View,
+        myCustomEditTextListener: EditTextValidator
+    ) : RecyclerView.ViewHolder(itemView) {
+        private val editTextListener = myCustomEditTextListener
         protected fun TextView.setDescription(description: String?) {
-            if (description.equals("null")) {
+            if (description.equals("null") || description.isNullOrBlank()) {
                 text = null
                 visibility = View.GONE
             } else {
-                text = description
+                text = HtmlCompat.fromHtml(description, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                setLinkTextColor(ContextCompat.getColor(itemView.context, R.color.purple_500))
+                movementMethod = LinkMovementMethod.getInstance()
                 visibility = View.VISIBLE
             }
         }
 
         protected fun TextInputLayout.setSpecs(spec: SpecialProperties) {
-            if (spec.inputMaxLength != null && spec.inputMaxLines != null) {
-                this.editText?.maxWidth = spec.inputMaxLength!!
-                this.editText?.maxLines = spec.inputMaxLines!!
-            } else if (spec.inputMaxLength != null) {
-                this.editText?.maxWidth = spec.inputMaxLength!!
-            } else if (spec.inputMaxLines != null) {
-                this.editText?.maxLines = spec.inputMaxLines!!
+            val inputMaxLength = spec.inputMaxLength
+            val inputMaxLines = spec.inputMaxLines
+            if (inputMaxLength != null && inputMaxLines != null) {
+                editText?.maxWidth = inputMaxLength
+                editText?.maxLines = inputMaxLines
+            } else if (inputMaxLength != null) {
+                editText?.maxWidth = inputMaxLength
+            } else if (inputMaxLines != null) {
+                editText?.maxLines = inputMaxLines
             }
         }
 
-        protected fun TextInputLayout.validator(field: Field) {
-            editText?.addTextChangedListener(object : EditTextValidator {
-                override fun validate(text: String?) {
-                    listener.onTextChanged(field, adapterPosition, text)
-                }
-            })
+        protected fun TextInputLayout.validator() {
+            editText?.addTextChangedListener(editTextListener)
+        }
+        fun TextInputLayout.disableTextWatcher(){
+            editText?.removeTextChangedListener(editTextListener)
         }
 
-        protected fun TextInputLayout.datePickerClicked(formInput: TextInputLayout){
+
+        protected fun TextInputLayout.datePickerClicked(formInput: TextInputLayout) {
             listener.onDateInputClicked(formInput)
         }
     }
 
-    private inner class InputTextViewHolder(itemView: View) : BaseViewHolder(itemView) {
+    private inner class InputTextViewHolder(
+        itemView: View,
+        myCustomEditTextListener: EditTextValidator
+    ) : BaseViewHolder(itemView, myCustomEditTextListener) {
         private val formInput: TextInputLayout = itemView.findViewById(R.id.inputLayout)
         private val description: TextView = itemView.findViewById(R.id.fieldDescription)
+
+        fun bind(fieldPrompt: FieldPrompt) {
+            bind(fieldPrompt.field)
+
+            val position = fieldPrompt.field.id!!.minus(1)
+
+            validate(position, fieldPrompt.errors, fieldPrompt.errors == "success")
+        }
 
         fun bind(field: Field) {
             formInput.hint = field.title
@@ -154,22 +238,40 @@ class FormAdapter(
                 formInput.setSpecs(field.specs!!)
             }
             formInput.editText?.inputType = InputType.TYPE_CLASS_TEXT
-            formInput.validator(field)
+        }
+        fun disableTextWatcher(){
+            formInput.disableTextWatcher()
+        }
+        fun addToTextWatcher(){
+            formInput.validator()
         }
 
-        fun validate(message: String?, success: Boolean) {
-            if (success) {
-                formInput.error = null
-            } else {
-                formInput.error = message
+        fun validate(position: Int, message: String?, success: Boolean) {
+            if (fieldPrompts[position].errors == message) {
+                if (success) {
+                    formInput.error = null
+                } else {
+                    formInput.error = message
+                }
             }
         }
 
     }
 
-    private inner class PasswordViewHolder(itemView: View) : BaseViewHolder(itemView) {
+    private inner class PasswordViewHolder(
+        itemView: View,
+        myCustomEditTextListener: EditTextValidator
+    ) : BaseViewHolder(itemView, myCustomEditTextListener) {
         private val formInput: TextInputLayout = itemView.findViewById(R.id.inputLayout)
         private val description: TextView = itemView.findViewById(R.id.fieldDescription)
+
+        fun bind(fieldPrompt: FieldPrompt) {
+            bind(fieldPrompt.field)
+
+            val position = fieldPrompt.field.id!!.minus(1)
+
+            validate(position, fieldPrompt.errors, fieldPrompt.errors == "success")
+        }
 
         fun bind(field: Field) {
             formInput.hint = field.title
@@ -177,24 +279,45 @@ class FormAdapter(
             if (field.specs != null) {
                 formInput.setSpecs(field.specs!!)
             }
-            formInput.validator(field)
             formInput.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+            formInput.editText?.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
             formInput.errorIconDrawable = null
             formInput.setStartIconDrawable(R.drawable.ic_password)
         }
-        fun validate(message: String?, success: Boolean) {
-            if (success) {
-                formInput.error = null
-            } else {
-                formInput.error = message
+
+        fun disableTextWatcher(){
+            formInput.disableTextWatcher()
+        }
+        fun addToTextWatcher(){
+            formInput.validator()
+        }
+
+        fun validate(position: Int, message: String?, success: Boolean) {
+            if (fieldPrompts[position].errors == message) {
+                if (success) {
+                    formInput.error = null
+                } else {
+                    formInput.error = message
+                }
             }
         }
 
     }
 
-    private inner class PasswordConfirmationViewHolder(itemView: View) : BaseViewHolder(itemView) {
+    private inner class PasswordConfirmationViewHolder(
+        itemView: View,
+        myCustomEditTextListener: EditTextValidator
+    ) : BaseViewHolder(itemView, myCustomEditTextListener) {
         private val formInput: TextInputLayout = itemView.findViewById(R.id.inputLayout)
         private val description: TextView = itemView.findViewById(R.id.fieldDescription)
+
+        fun bind(fieldPrompt: FieldPrompt) {
+            bind(fieldPrompt.field)
+
+            val position = fieldPrompt.field.id!!.minus(1)
+
+            validate(position, fieldPrompt.errors, fieldPrompt.errors == "success")
+        }
 
         fun bind(field: Field) {
             formInput.hint = field.title
@@ -202,33 +325,51 @@ class FormAdapter(
             if (field.specs != null) {
                 formInput.setSpecs(field.specs!!)
             }
-            formInput.validator(field)
             formInput.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+            formInput.editText?.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
             formInput.errorIconDrawable = null
             formInput.setStartIconDrawable(R.drawable.ic_password)
         }
-        fun validate(message: String?, success: Boolean) {
-            if (success) {
-                formInput.error = null
-            } else {
-                formInput.error = message
+        fun disableTextWatcher(){
+            formInput.disableTextWatcher()
+        }
+        fun addToTextWatcher(){
+            formInput.validator()
+        }
+
+        fun validate(position: Int, message: String?, success: Boolean) {
+            if (fieldPrompts[position].errors == message) {
+                if (success) {
+                    formInput.error = null
+                } else {
+                    formInput.error = message
+                    Log.d("ALIBEK", "problem: $position")
+                }
             }
         }
 
     }
 
-    private inner class DateSelectionViewHolder(itemView: View) : BaseViewHolder(itemView) {
+    private inner class DateSelectionViewHolder(
+        itemView: View,
+        myCustomEditTextListener: EditTextValidator
+    ) : BaseViewHolder(itemView, myCustomEditTextListener) {
         private val formInput: TextInputLayout = itemView.findViewById(R.id.inputLayout)
         private val description: TextView = itemView.findViewById(R.id.fieldDescription)
+
+        fun bind(fieldPrompt: FieldPrompt) {
+            bind(fieldPrompt.field)
+
+            val position = fieldPrompt.field.id!!.minus(1)
+
+            validate(position, fieldPrompt.errors, fieldPrompt.errors == "success")
+        }
 
         fun bind(field: Field) {
             formInput.hint = field.title
             description.setDescription(field.description)
             if (field.specs != null) {
                 formInput.setSpecs(field.specs!!)
-            }
-            if (field.isRequired == true) {
-                formInput.validator(field)
             }
             formInput.editText?.inputType = InputType.TYPE_NULL
             formInput.editText?.isFocusable = false
@@ -236,11 +377,21 @@ class FormAdapter(
             formInput.setStartIconDrawable(R.drawable.ic_calendar)
             formInput.datePickerClicked(formInput)
         }
-        fun validate(message: String?, success: Boolean) {
-            if (success) {
-                formInput.error = null
-            } else {
-                formInput.error = message
+
+        fun disableTextWatcher(){
+            formInput.disableTextWatcher()
+        }
+        fun addToTextWatcher(){
+            formInput.validator()
+        }
+
+        fun validate(position: Int, message: String?, success: Boolean) {
+            if (fieldPrompts[position].errors == message) {
+                if (success) {
+                    formInput.error = null
+                } else {
+                    formInput.error = message
+                }
             }
         }
 

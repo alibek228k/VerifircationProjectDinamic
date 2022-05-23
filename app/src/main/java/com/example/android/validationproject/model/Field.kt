@@ -4,7 +4,7 @@ import com.example.android.validationproject.Validation.Errors
 import com.example.android.validationproject.Validation.Validators
 import com.example.android.validationproject.data.SpecialProperties
 
-class Field(
+class Field constructor(
     var id: Int? = null,
     var title: String? = null,
     var type: Type? = null,

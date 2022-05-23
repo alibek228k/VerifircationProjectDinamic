@@ -59,7 +59,7 @@
         "id": 5,
         "title": "IIN",
         "type": "input_text",
-        "description": "Refer to: <a href=\"https://ru.wikipedia.org/wiki/Индивидуальный_идентификационный_номер\"></a>",
+        "description": "Refer to: <a href=\"https://ru.wikipedia.org/wiki/Индивидуальный_идентификационный_номер\">IIN</a>",
         "is_required": true,
         "specs": {
             "input_text_max_lines": 1
@@ -106,7 +106,7 @@
         "description": "Format: at least 1 capital letter, at least 1 digit & must have 6 to 25 characters",
         "is_required": true,
         "validators": {
-            "regex": "^(?=.*[0-9])(?=.*[A-Z])(?=\S+$).{6,25}$"
+            "regex": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%!\\-_?&])(?=\\S+$).{6,25}"
         },
         "errors": {
             "blank": "The password value cannot be blank! Please, enter a password",
